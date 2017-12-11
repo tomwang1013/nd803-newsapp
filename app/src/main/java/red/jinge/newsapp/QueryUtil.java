@@ -86,7 +86,7 @@ public class QueryUtil {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (SSLPeerUnverifiedException e) {
-            Log.e(LOG_TAG, "Can not connect to douban: " + e.getMessage());
+            Log.e(LOG_TAG, "Can not connect: " + e.getMessage());
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -126,7 +126,8 @@ public class QueryUtil {
 
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
-            JSONArray news = jsonObject.getJSONArray("results");
+            JSONObject response = jsonObject.getJSONObject("response");
+            JSONArray news = response.getJSONArray("results");
 
             for (int i = 0; i < news.length(); i++) {
                 JSONObject properties = news.getJSONObject(i);

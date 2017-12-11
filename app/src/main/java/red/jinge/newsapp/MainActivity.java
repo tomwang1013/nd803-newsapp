@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     private ListView mListViewNews;
     private TextView mTextViewEmpty;
     private NewsAdapter mNewsAdapter;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
         mListViewNews = findViewById(R.id.list_view_news);
         mTextViewEmpty = findViewById(R.id.text_view_empty);
+        mProgressBar = findViewById(R.id.progress_bar_loading);
 
         mNewsAdapter = new NewsAdapter(this, new ArrayList<News>());
         mListViewNews.setAdapter(mNewsAdapter);
@@ -54,9 +57,10 @@ public class MainActivity extends AppCompatActivity
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null || !activeNetwork.isConnectedOrConnecting()) {
+            mProgressBar.setVisibility(View.GONE);
             mTextViewEmpty.setText(R.string.no_network_connection);
         } else {
-            getLoaderManager().initLoader(0, null, this);
+            getLoaderManager().initLoader(0, null, this).forceLoad();
         }
     }
 
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity
      * @param news earthquake list from network
      */
     private void updateUI(List<News> news) {
+        mProgressBar.setVisibility(View.GONE);
         mTextViewEmpty.setText(R.string.no_result);
         mNewsAdapter.clear();
 
